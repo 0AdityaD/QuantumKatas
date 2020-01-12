@@ -4,6 +4,7 @@
 namespace Quantum.Kata.JointMeasurements {
     
     open Microsoft.Quantum.Intrinsic;
+    open Microsoft.Quantum.Arrays;
     
     
     //////////////////////////////////////////////////////////////////
@@ -31,9 +32,7 @@ namespace Quantum.Kata.JointMeasurements {
     //         1 if they were in the second superposition.
     // The state of the qubits at the end of the operation does not matter.
     operation SingleQubitMeasurement (qs : Qubit[]) : Int {
-        // Hint: Use two single-qubit measurements.
-        // ...
-        return -1;
+        return M(qs[0]) == M(qs[1]) ? 0 | 1;
     }
     
     
@@ -45,8 +44,8 @@ namespace Quantum.Kata.JointMeasurements {
     //         1 if they were in the second superposition.
     // The state of the qubits at the end of the operation should be the same as the starting state.
     operation ParityMeasurement (qs : Qubit[]) : Int {
-        // ...
-        return -1;
+        // equiv to applying Z tensor Z and measuring whether in 1 or -1 eigenspace
+        return Measure([PauliZ, PauliZ], qs) == Zero ? 0 | 1;
     }
     
     
@@ -58,8 +57,7 @@ namespace Quantum.Kata.JointMeasurements {
     //         1 if they were in the second superposition.
     // The state of the qubits at the end of the operation should be the same as the starting state.
     operation GHZOrGHZWithX (qs : Qubit[]) : Int {
-        // ...
-        return -1;
+        return ParityMeasurement([qs[0], qs[2]]);
     }
     
     
@@ -71,8 +69,7 @@ namespace Quantum.Kata.JointMeasurements {
     //         1 if they were in the second superposition.
     // The state of the qubits at the end of the operation should be the same as the starting state.
     operation GHZOrWState (qs : Qubit[]) : Int {
-        // ...
-        return -1;
+        return Measure(ConstantArray(Length(qs), PauliZ), qs) == Zero ? 0 | 1;
     }
     
     
@@ -84,8 +81,7 @@ namespace Quantum.Kata.JointMeasurements {
     //         1 if they were in the second superposition.
     // The state of the qubits at the end of the operation should be the same as the starting state.
     operation DifferentBasis (qs : Qubit[]) : Int {
-        // ...
-        return -1;
+        return Measure([PauliX, PauliX], qs) == Zero ? 0 | 1;
     }
     
     
@@ -97,7 +93,10 @@ namespace Quantum.Kata.JointMeasurements {
     //        Do not use two-qubit gates.
     // You do not need to allocate extra qubits.
     operation ControlledX (qs : Qubit[]) : Unit {
-        // ...
+        H(qs[1]);
+        if (Measure([PauliZ, PauliZ], qs) == One) {
+            X(qs[1]);
+        }
     }
     
     
